@@ -134,13 +134,16 @@ all up using routes, a controller and a login view.
 **config/routes.rb**:
 
 ```ruby
-  get 'auth/:provider/callback', to: 'sessions#create'
+  post 'auth/:provider/callback', to: 'sessions#create'
   get '/login', to: 'sessions#new'
 ```
 
 **app/controllers/sessions_controller.rb**:
 ```ruby
 class SessionsController < ApplicationController
+
+  skip_before_action :verify_authenticity_token
+
   def new
     render :new
   end
@@ -162,7 +165,8 @@ end
 Now if you visit `/login` and click the Login button, you should see the
 OmniAuth developer login screen. After submitting it, you are returned to your
 application at `Sessions#create`. The raise should now display all the Omniauth
-details you have available to integrate it into your own user management.
+details you have available to integrate it into your own user management; look
+for the parameters hash listed on the Rails error page.
 
 If you want out of the box usermanagement, you should consider using Omniauth
 through Devise. Please visit the [Devise Github page](https://github.com/heartcombo/devise#omniauth)
